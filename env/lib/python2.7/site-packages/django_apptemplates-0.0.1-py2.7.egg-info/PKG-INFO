@@ -1,0 +1,48 @@
+Metadata-Version: 1.1
+Name: django-apptemplates
+Version: 0.0.1
+Summary: Django template loader that allows you to load template from a specific application
+Home-page: http://bitbucket.org/tzulberti/django-apptemplates/
+Author: Tomas Zulberti
+Author-email: tzulberti@gmail.com
+License: License :: OSI Approved :: BSD License
+Description: djang-apptemplates is a Django template loader that allows you to load a 
+        template from a specific application. This allows you to both extend and 
+        override a template at the same time. The default Django loaders require 
+        you to copy the entire template you want to override, even if you only
+        want to override one small block.
+        
+        Template usage example (extend and override Django admin base template)::
+        
+            {% extends "admin:admin/base.html" %}
+        
+        Settings::
+        
+            TEMPLATE_LOADERS = (
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                'apptemplates.Loader',
+            )
+        
+        Based on: http://djangosnippets.org/snippets/1376/
+        
+        The original Author of this python package is: Konrad Wojas
+        (konrad.wojas@jibecompany.com)
+        
+Keywords: django admin,django admin templates
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Framework :: Django
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.4
+Classifier: Programming Language :: Python :: 2.5
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Internet :: WWW/HTTP :: WSGI
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Environment :: Web Environment
+Classifier: Operating System :: OS Independent

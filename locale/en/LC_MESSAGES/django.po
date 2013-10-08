@@ -1,0 +1,331 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-04 16:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: 404.html:5 404.html.py:8
+msgid "Page not found"
+msgstr ""
+
+#: 404.html:9
+msgid "The requested page could not be found on this website."
+msgstr ""
+
+#: 404.html:12
+#, python-format
+msgid "Click <a href=\"%(home_url)s\">here</a> to return to the homepage."
+msgstr ""
+
+#: 500.html:5 500.html.py:8
+msgid "Internal server error"
+msgstr ""
+
+#: 500.html:9
+msgid "There was an error while trying to serve the requested page. Please try again. If the error persists, please contact the webmaster about it. In any case, we have been notified of this error."
+msgstr ""
+
+#: 500.html:12
+#, python-format
+msgid "If you need assistance, you may reference this error as <strong>%(error_id)s</strong>."
+msgstr ""
+
+#: footer.html:6
+msgid "Menu"
+msgstr ""
+
+#: footer.html:7
+msgid "Home"
+msgstr ""
+
+#: footer.html:8
+msgid "Projects"
+msgstr ""
+
+#: footer.html:9
+msgid "Tasks"
+msgstr ""
+
+#: footer.html:10
+msgid "Actions"
+msgstr ""
+
+#: footer.html:11
+msgid "Members"
+msgstr ""
+
+#: footer.html:12
+msgid "Organizations"
+msgstr ""
+
+#: footer.html:13
+msgid "Partners"
+msgstr ""
+
+#: footer.html:14
+msgid "Business"
+msgstr ""
+
+#: footer.html:15 footer.html.py:35
+msgid "Learn more"
+msgstr ""
+
+#: footer.html:16 footer.html.py:36
+msgid "In the media"
+msgstr ""
+
+#: footer.html:17 footer.html.py:37
+msgid "FAQ"
+msgstr ""
+
+#: footer.html:18 footer.html.py:38
+msgid "Contact"
+msgstr ""
+
+#: footer.html:21
+msgid "News"
+msgstr ""
+
+#: footer.html:24
+msgid "Join"
+msgstr ""
+
+#: footer.html:27
+msgid "Tell a friend"
+msgstr ""
+
+#: footer.html:33
+msgid "More"
+msgstr ""
+
+#: footer.html:34 accounts/profile_public.html:7
+msgid "About"
+msgstr ""
+
+#: footer.html:41
+msgid "Tweet"
+msgstr ""
+
+#: footer.html:44
+msgid "We like you too"
+msgstr ""
+
+#: accounts/account_settings.html:5
+#, python-format
+msgid "1%% News"
+msgstr ""
+
+#: accounts/login.html:6
+#, python-format
+msgid "Log in to 1%% Club"
+msgstr ""
+
+#: accounts/login.html:11
+msgid "You did it!"
+msgstr ""
+
+#: accounts/login.html:12
+msgid "(Welcome back friend)"
+msgstr ""
+
+#: accounts/login.html:13
+msgid "Login here with your email address and password"
+msgstr ""
+
+#: accounts/login.html:19
+msgid "Forgot your password?"
+msgstr ""
+
+#: accounts/login.html:20 accounts/nav.html:35
+msgid "Log in"
+msgstr ""
+
+#: accounts/nav.html:8 accounts/profile_nav.html:7
+#, python-format
+msgid "My 1%%"
+msgstr ""
+
+#: accounts/nav.html:21
+msgid "Donations"
+msgstr ""
+
+#: accounts/nav.html:33
+msgid "Sign up"
+msgstr ""
+
+#: accounts/nav.html:34
+msgid "or"
+msgstr ""
+
+#: accounts/profile_form.html:6
+msgid "Edit your profile"
+msgstr ""
+
+#: accounts/profile_form.html:7
+#, python-format
+msgid "Personalise your account so 1%%Members can get to know you."
+msgstr ""
+
+#: accounts/profile_form.html:15
+msgid "About yourself"
+msgstr ""
+
+#: accounts/profile_form.html:29
+#, python-format
+msgid "Why did you join 1%%Club?"
+msgstr ""
+
+#: accounts/profile_form.html:43
+msgid "Your website"
+msgstr ""
+
+#: accounts/profile_form.html:57 accounts/profile_public.html:20
+msgid "Location"
+msgstr ""
+
+#: accounts/profile_form.html:76
+#, python-format
+msgid "1%%Skills"
+msgstr ""
+
+#: accounts/profile_form.html:77
+#, python-format
+msgid "How much time are you willing to spend your 1%%Skills?<br/>Let us know so we can provide you with some matching tasks from our projects."
+msgstr ""
+
+#: accounts/profile_form.html:83 accounts/profile_public.html:28
+msgid "Time available"
+msgstr ""
+
+#: accounts/profile_nav.html:9
+msgid "Profile"
+msgstr ""
+
+#: accounts/profile_nav.html:13
+msgid "Preview my profile"
+msgstr ""
+
+#: accounts/profile_nav.html:24
+msgid "Payment"
+msgstr ""
+
+#: accounts/profile_nav.html:24
+msgid "Orders"
+msgstr ""
+
+#: accounts/profile_public.html:12
+#, python-format
+msgid "Joined 1%%Club because"
+msgstr ""
+
+#: accounts/signup.html:6
+#, python-format
+msgid "Join 1%%Club"
+msgstr ""
+
+#: accounts/signup.html:8
+#, python-format
+msgid "1%%Club is the global platform where you can share a little and change the world, in your vary own way. We ignite modern society to share 1%% and support smart ideas from people in developing countries. We do this in a new, open way, believing in the power of collaboration boosted by today's technical possibilities. If we all share a little, we can change the world."
+msgstr ""
+
+#: accounts/signup.html:14
+msgid "Thanks for signing up!"
+msgstr ""
+
+#: accounts/signup.html:16
+msgid "We've sent you an email. Please click <strong>Activate Profile</strong> in the email we just sent you."
+msgstr ""
+
+#: accounts/signup.html:22
+#, python-format
+msgid ""
+"\n"
+"    By joining 1%%Club I hereby agree to the <a %(action)s href=\"%(href)s\"> 1%%Club Terms of service</a>\n"
+"    "
+msgstr ""
+
+#: accounts/signup.html:30
+msgid "Already have an account?"
+msgstr ""
+
+#: accounts/signup.html:31
+msgid "Log in here, fast & easy"
+msgstr ""
+
+#: accounts/signup.html:38
+#, python-format
+msgid "Why join 1%%Club?"
+msgstr ""
+
+#: accounts/signup.html:40
+msgid "It's easy to find projects you like."
+msgstr ""
+
+#: accounts/signup.html:41
+#, python-format
+msgid "A fun and personal way to share your 1%%."
+msgstr ""
+
+#: accounts/signup.html:42
+msgid "You'll receive updates on the progress of the projects you support."
+msgstr ""
+
+#: registration/activation_email.html:20
+msgid "Confirm your registration"
+msgstr ""
+
+#: registration/activation_email.html:28
+#, python-format
+msgid "Great! We can almost welcome you at 1%%Club!"
+msgstr ""
+
+#: registration/activation_email.html:36
+msgid "Click the link below to confirm your registration"
+msgstr ""
+
+#: registration/activation_email.html:46
+msgid "activate profile"
+msgstr ""
+
+#: registration/activation_email.html:56
+#, python-format
+msgid "Your activation code will expire in %(expiration_days)s days."
+msgstr ""
+
+#: registration/logged_out.html:9
+msgid "Logged out."
+msgstr ""
+
+#: registration/password_reset_email.html:21
+msgid "Click on this link to reset your password."
+msgstr ""
+
+#: registration/password_reset_email.html:31
+msgid "Reset"
+msgstr ""
+
+#: registration/password_reset_email.html:41
+msgid "See you at"
+msgstr ""
+
+#: registration/password_reset_email.html:41
+msgid "in a minute!"
+msgstr ""
+
+#: registration/password_reset_subject.txt:2
+#, python-format
+msgid "Password reset on %(site_name)s"
+msgstr ""

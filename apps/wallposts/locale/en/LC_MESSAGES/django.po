@@ -1,0 +1,306 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-04 16:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: admin.py:96
+msgid "Author"
+msgstr ""
+
+#: mails.py:30
+#, python-format
+msgid "%(author)s has left a message on your project page."
+msgstr ""
+
+#: mails.py:49
+#, python-format
+msgid "%(author)s has left a message on your task page."
+msgstr ""
+
+#: mails.py:77
+#, python-format
+msgid "%(author)s commented on your wallpost."
+msgstr ""
+
+#: models.py:30 models.py:70 models.py:101
+msgid "author"
+msgstr ""
+
+#: models.py:31 models.py:71 models.py:102
+msgid "editor"
+msgstr ""
+
+#: models.py:31
+msgid "The last user to edit this wallpost."
+msgstr ""
+
+#: models.py:34 models.py:109
+msgid "created"
+msgstr ""
+
+#: models.py:35 models.py:110
+msgid "updated"
+msgstr ""
+
+#: models.py:36 models.py:68 models.py:111
+msgid "deleted"
+msgstr ""
+
+#: models.py:37 models.py:69 models.py:112
+msgid "IP address"
+msgstr ""
+
+#: models.py:40
+msgid "content type"
+msgstr ""
+
+#: models.py:41
+msgid "object ID"
+msgstr ""
+
+#: models.py:71
+msgid "The last user to edit this wallpost photo."
+msgstr ""
+
+#: models.py:87
+msgid "related type"
+msgstr ""
+
+#: models.py:88
+msgid "related ID"
+msgstr ""
+
+#: models.py:102
+msgid "The last user to edit this reaction."
+msgstr ""
+
+#: models.py:105
+msgid "reaction text"
+msgstr ""
+
+#: models.py:120
+msgid "Reaction"
+msgstr ""
+
+#: models.py:121
+msgid "Reactions"
+msgstr ""
+
+#: templates/project_wallpost_new.mail.html:5
+#, python-format
+msgid ""
+"\n"
+"Hello %(receiver_name)s,<br/>\n"
+"<br/>\n"
+"%(author_name)s has left a message on your project page.<br/>\n"
+"<br/>\n"
+"You must be curious what! Don't wait any longer and check it out <a href=\"%(site)s%(link)s\">here on our website</a>.\n"
+"<br/>\n"
+"See you in a bit!<br/>\n"
+"<br/>\n"
+"Liane | 1%%CLUB\n"
+msgstr ""
+
+#: templates/project_wallpost_new.mail.txt:5
+#, python-format
+msgid ""
+"\n"
+"Hello %(receiver_name)s,\n"
+"\n"
+"%(author_name)s has left a message on your project page.\n"
+"\n"
+"You must be curious what! Don't wait any longer and check it out here:\n"
+"\n"
+"%(site)s%(link)s\n"
+"\n"
+"See you in a bit!\n"
+"\n"
+"Liane | 1%%CLUB\n"
+msgstr ""
+
+#: templates/project_wallpost_reaction_new.mail.html:5
+#, python-format
+msgid ""
+"\n"
+"Hello %(receiver_name)s,<br/>\n"
+"<br/>\n"
+"Yes, yes, yes! <b>%(author_name)s</b> commented on your wallpost.<br/>\n"
+"<br/>\n"
+"<a href=\"%(site)s%(link)s\">Go to our website</a> and read the reaction.<br/>\n"
+"<br/>\n"
+"See you in a bit!<br/>\n"
+"<br/>\n"
+"Liane | 1%%CLUB\n"
+msgstr ""
+
+#: templates/project_wallpost_reaction_new.mail.txt:5
+#, python-format
+msgid ""
+"\n"
+"Hello %(receiver_name)s,\n"
+"\n"
+"Yes, yes, yes! %(author_name)s commented on your wallpost.\n"
+"\n"
+"Click the link below to got to our website:\n"
+"\n"
+"%(site)s%(link)s\n"
+"\n"
+"See you in a bit!\n"
+"\n"
+"Liane | 1%%CLUB\n"
+"\n"
+msgstr ""
+
+#: templates/reactions.hbs:26 templates/wallposts.hbs:195
+#: templates/wallposts.hbs.py:263 templates/wallposts.hbs:321
+msgid "Delete"
+msgstr ""
+
+#: templates/reactions.hbs:60 templates/wallposts.hbs:20
+#: templates/wallposts.hbs.py:351
+msgid "Login"
+msgstr ""
+
+#: templates/reactions.hbs:60 templates/wallposts.hbs:351
+msgid "member"
+msgstr ""
+
+#: templates/reactions.hbs:60
+msgid "to leave a reaction"
+msgstr ""
+
+#: templates/task_wallpost_new.mail.html:5
+#, python-format
+msgid ""
+"\n"
+"Hello %(receiver_name)s,<br/>\n"
+"<br/>\n"
+"%(author_name)s has left a message on your task page.<br/>\n"
+"<br/>\n"
+"You must be curious what! Don't wait any longer and check it <a href=\"%(site)s%(link)s\">here on our website</a>.<br/>\n"
+"<br/>\n"
+"See you in a bit!<br/>\n"
+"<br/>\n"
+"Liane | 1%%CLUB\n"
+msgstr ""
+
+#: templates/task_wallpost_new.mail.txt:5
+#, python-format
+msgid ""
+"\n"
+"Hello %(receiver_name)s,\n"
+"\n"
+"%(author_name)s has left a message on your task page.\n"
+"\n"
+"You must be curious what! Don't wait any longer and check it out here:\n"
+"\n"
+"%(site)s%(link)s\n"
+"\n"
+"See you in a bit!\n"
+"\n"
+"Liane | 1%%CLUB\n"
+msgstr ""
+
+#: templates/wallposts.hbs:10
+msgid "Write an update"
+msgstr ""
+
+#: templates/wallposts.hbs:11
+msgid "Write an update of your project to inform your crowd."
+msgstr ""
+
+#: templates/wallposts.hbs:14 templates/wallposts.hbs.py:19
+msgid "Write a comment"
+msgstr ""
+
+#: templates/wallposts.hbs:15
+msgid "Write an comment to place on the project's wall."
+msgstr ""
+
+#: templates/wallposts.hbs:20
+msgid "You have to"
+msgstr ""
+
+#: templates/wallposts.hbs:20
+#, python-format
+msgid "become a 1%%Member"
+msgstr ""
+
+#: templates/wallposts.hbs:20
+msgid "to leave a comment"
+msgstr ""
+
+#: templates/wallposts.hbs:33
+msgid "Name of your update."
+msgstr ""
+
+#: templates/wallposts.hbs:47
+msgid "Your update."
+msgstr ""
+
+#: templates/wallposts.hbs:61
+msgid "Add link to video"
+msgstr ""
+
+#: templates/wallposts.hbs:75
+msgid "Upload photos"
+msgstr ""
+
+#: templates/wallposts.hbs:76
+msgid "format 620 x 380 minimum for best result"
+msgstr ""
+
+#: templates/wallposts.hbs:83
+msgid "Select photos"
+msgstr ""
+
+#: templates/wallposts.hbs:90
+msgid "Error"
+msgstr ""
+
+#: templates/wallposts.hbs:107
+msgid "Post Update"
+msgstr ""
+
+#: templates/wallposts.hbs:117 templates/wallposts.hbs.py:130
+#: templates/wallposts.hbs:285 templates/wallposts.hbs.py:298
+msgid "Comment"
+msgstr ""
+
+#: templates/wallposts.hbs:154 templates/wallposts.hbs.py:363
+msgid "Show more"
+msgstr ""
+
+#: templates/wallposts.hbs:154
+msgid "more"
+msgstr ""
+
+#: templates/wallposts.hbs:252
+msgid "Made a donation"
+msgstr ""
+
+#: templates/wallposts.hbs:254
+msgid "Someone made a donation"
+msgstr ""
+
+#: templates/wallposts.hbs:351
+msgid "or become a"
+msgstr ""
+
+#: templates/wallposts.hbs:351
+msgid "to leave a comment."
+msgstr ""

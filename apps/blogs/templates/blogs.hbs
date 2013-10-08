@@ -1,0 +1,83 @@
+{% load templatetag_handlebars %}
+{% load i18n %}
+
+{% tplhandlebars "_news_header" %}
+
+    <div class="container section">
+        <section class="wrapper">
+            <div class="content">
+                <h1>{% blocktrans %}1%News{% endblocktrans %}</h1>
+            </div>
+        </section>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "news_index" %}
+
+    {% trans "Loading the latest news" %}
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "news_item" %}
+
+        <header id="page-header">
+            <h1>{{ title}}</h1>
+            <a {{action openInBigBox "userModal" author}} class="user">
+                <span class="user-img"><img {{ bindAttr src="author.getAvatar" }} width="100%" alt="Avatar"></span>
+                <strong>{{ author.full_name }}</strong>
+            </a>
+            <small class="timestamp">{{ localize publicationDate formatting="X" }}</small>
+        </header>
+
+        <div class="content">
+            {{{ body }}}
+        </div>
+        
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "news" %}
+
+    <section class="wrapper">
+    	<div id="page">
+	        <article class="blogpost" id="page-content">
+	            {{outlet}}
+	        </article>
+    	
+	        <sidebar class="pages-nav">
+            <h3>{% trans "More news" %}</h3>
+	            <ul>
+	                {{#each model}}
+	                    <li>
+	                        <a {{action showNews this.id}} class="item">
+	                            {{title}} <em class="timestamp">{{localize publicationDate formatting="X"}}</em>
+	                        </a>
+	                    </li>
+	                {{/each}}
+	            </ul>
+	            
+	            <div class="pagination">
+		            {{#if controller.hasPrevious}}
+		                <a {{action previousNews}} class="pager left">
+		                    <span class="flaticon solid left-circle-2"></span>
+		                    {% trans "previous 5" %}
+		                </a>
+		            {{/if}}
+		            {{#if controller.hasNext}}
+		                <a {{action nextNews}} class="pager right">
+		                    {% trans "next 5" %}
+		                    <span class="flaticon solid right-circle-2"></span>
+		                </a>
+		            {{/if}}
+	            </div>
+	            
+	        </sidebar>
+    	</div>
+    </section>
+
+{% endtplhandlebars %}
+

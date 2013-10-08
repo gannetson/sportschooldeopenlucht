@@ -1,0 +1,367 @@
+{% load templatetag_handlebars %}
+{% load i18n %}
+{% load static %}
+
+{% tplhandlebars "project_wallpost_new" %}
+	
+    <div id="wallpost-form">
+        {{#if controllers.currentUser.isAuthenticated }}
+            {{#if isProjectOwner }}
+            	<h3>{% trans "Write an update" %}</h3>
+            	<p>{% trans "Write an update of your project to inform your crowd." %}</p>
+                {{view App.MediaWallPostNewView content=content}}
+            {{else}}
+            	<h3>{% trans "Write a comment" %}</h3>
+            	<p>{% trans "Write an comment to place on the project's wall." %}</p>
+                {{view App.TextWallPostNewView content=content}}
+            {{/if}}
+        {{else}}
+        	<h3>{% trans "Write a comment" %}</h3>
+        	<p>{% trans "You have to" %} <a {{action openInBox "login"}} class="nav-login">{%  trans "Login" %}</a> or {{#linkTo "signup"}}{% blocktrans %}become a 1%Member{% endblocktrans %}{{/linkTo}} {% trans "to leave a comment" %}.</p>
+        {{/if}}
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "media_wallpost_new" %}
+
+    <fieldset>
+        <ul>
+            <li class="control-group">
+                <label class="control-label" for="wallpost-title">
+                    {% trans "Name of your update." %}
+                </label>
+
+                <div class="controls">
+                    {{view Ember.TextField valueBinding="title" placeholder="Keep it short and simple" id="wallpost-title" name="wallpost-title" classBinding="errors.title.length:error"}}
+                </div>
+
+                {{#if errors.title }}
+                    <div class="errors">{{#each errors.title }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group">
+                <label class="control-label" for="wallpost-update">
+                    {% trans "Your update." %}
+                </label>
+
+                <div class="controls">
+                    {{view Ember.TextArea valueBinding="text" placeholder="Tell something about the progress, context or yourself!" cols="50" rows="4" name="wallpost-update" id="wallpost-update" classBinding="errors.text.length:error"}}
+                </div>
+
+                {{#if errors.text }}
+                    <div class="errors">{{#each errors.text }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group">
+                <label class="control-label" for="wallpost-video" >
+                    {% trans "Add link to video" %}
+                </label>
+
+                <div class="controls">
+                    {{view Ember.TextField valueBinding="video_url" placeholder="Use YouTube or Vimeo" id="wallpost-video" name="wallpost-video" classBinding="errors.video_url.length:error"}}
+                </div>
+
+                {{#if errors.video_url}}
+                    <div class="errors">{{#each errors.video_url}}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group">
+                <label class="control-label" for="wallpost-photo">
+                    {% trans "Upload photos" %}<br/>
+                    <small>{% trans "format 620 x 380 minimum for best result" %}</small>
+                </label>
+
+                <div class="controls">
+                    <a class="btn btn-iconed btn-uploader">
+                        {{view App.UploadMultipleFiles valueBinding="photo_files" multiple="multiple" id="wallpost-photo" name="wallpost-photo" accept="image/*"}}
+                        <i class="flaticon solid upload-document-1"></i>
+                        {% trans "Select photos" %}
+                    </a>
+
+                    <ul class="wallpost-photos">
+                        {{#each photo in files}}
+                            <li>
+                                {{#if photo.errors}}
+                                    <span class="error">{% trans "Error" %}</span>
+                                {{else}}
+                                    {{#if photo.photo.small}}
+                                        <img {{bindAttr src="photo.photo.small"}} width="100%" alt="Thumbnail" />
+                                        <a {{action "removePhoto" photo href=true}} class="remove">[x]</a>
+                                    {{else}}
+                                        <img src="{% get_static_prefix %}images/loading.gif" width="100%" alt="Thumbnail" />
+                                    {{/if}}
+                                {{/if}}
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </fieldset>
+
+    <button class="btn btn-iconed right" type="submit"><i class="flaticon solid thinking-comment-1"></i>{% trans "Post Update" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "text_wallpost_new" %}
+	
+	<fieldset>
+	   <ul>
+	        <li class="control-group">
+	            <label for="wallpost-update" class="control-label">{% trans "Comment" %}</label>
+	
+	            <div class="controls">
+	                {{view Ember.TextArea valueBinding="text" cols="50" rows="4" name="wallpost-update" id="wallpost-update"}}
+	            </div>
+	
+	            {{#if errors.text }}
+	                <div class="errors">{{#each errors.text}}<p>{{this}}</p>{{/each}}</div>
+	            {{/if}}
+	        </li>
+	    </ul>
+	</fieldset>
+
+    <button class="btn btn-iconed right" type="submit"><i class="flaticon solid thinking-comment-1"></i>{% trans "Comment" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "project_wallpost_list" %}
+
+    <section class="wrapper">
+    	
+    	<div id="wallposts" class="content">
+
+	        {{#each item in items itemController="wallPost"}}
+	            {{#if item.isLoaded}}
+                    {{#if item.isSystemWallPost}}
+    	                {{view "App.SystemWallPostView"}}
+                    {{else}}
+    	                {{view "App.ProjectWallPostView"}}
+                    {{/if}}
+	            {{/if}}
+	        {{/each}}
+        	
+        	<article class="wallpost">
+            {{#if canLoadMore}}
+                <a {{action "showMore"}} class="show-more button-link">
+                    <em class="flaticon solid plus-2"></em> {% trans "Show more" %} <small>{{remainingItemCount}} {% trans "more" %}</small>
+                </a>
+            {{else}}
+                {# trans "no more posts to show" #}
+            {{/if}}
+			</article>
+
+    	</div>
+
+        <sidebar class="sidebar tip">
+        	{{ render "projectWallPostNew" }}
+        </sidebar>
+        
+    </section>
+    
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "project_wallpost" %}
+
+    <article class="wallpost">
+        <header>
+
+            <a {{action openInBigBox "userModal" author}} class="user initiator">
+                <span class="user-img">
+                    <img {{bindAttr src="author.getAvatar"}} width="100%" alt="Avatar" />
+                </span>
+                {# <em class="user-type not-implemented">{% trans "Project Initiator" %}</em> #}
+                <strong class="user-name">{{author.full_name}}</strong>
+                {{#if created}}
+                    <em class="timestamp">{{ localize created formatting="X" }}</em>
+                {{/if}}
+            </a>
+
+            {{#if title}}
+                <h3>{{title}}</h3>
+            {{/if}}
+
+            {{#if isAuthor}}
+                <ul class="manage">
+                    {# <li class="manage-edit not-implemented"><a href="#">{% trans "Edit" %}</a></li> #}
+                    <li class="manage-remove"><a {{action "deleteWallPost" target="view"}}><em class="flaticon solid trash-2"></em> {% trans "Delete" %}</a></li>
+                </ul>
+            {{/if}}
+        </header>
+
+        <div class="content">
+
+            {{#if video_html}}
+                <div class="video">{{{video_html}}}</div>
+            {{/if}}
+
+            {{{text}}}
+
+            {# This is temporary and will go away when we figure out how to upload related photos. #}
+            {{#if photo}}
+                <div class="photo-viewer">
+                    <span class="photo"><img {{bindAttr src="photo"}} width="100%" alt="Gallery" /></span>
+                </div>
+            {{/if}}
+
+            {{#if photos.length}}
+                <div class="photo-viewer">
+                    <ul>
+                        {{#each photo in photos}}
+                            <li><a {{bindAttr href="photo.photo.full"}} class="gallery-picture" title="picture"><img {{bindAttr src="photo.photo.small"}} width="100%" alt="Thumbnail" /></a></li>
+                        {{/each}}
+                    </ul>
+                </div>
+            {{/if}}
+
+	    </div>
+
+        <!-- reaction-box -->
+        <div class="reaction-box">
+            {{render "wallPostReactionList" reactions}}
+        </div>
+        <!-- end: reaction-box -->
+
+    </article>
+
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "system_wallpost" %}
+
+    <article class="wallpost system-wallpost">
+        <header class="user">
+
+            <span class="post-type-icon">
+                <em class="flaticon solid">&euro;</em>
+                Donation
+            </span>
+            {{#if author}}
+                <a {{action openInBigBox "userModal" author}} class="initiator">
+                    <strong class="user-name">{{author.full_name}}</strong>
+                </a>
+                {% trans "Made a donation" %}
+            {{else}}
+                {% trans "Someone made a donation" %}
+            {{/if}}
+            {{#if created}}
+                <em class="timestamp">{{ localize created formatting="X" }}</em>
+            {{/if}}
+
+            {{#if isAuthor}}
+                <ul class="manage">
+                    {# <li class="manage-edit not-implemented"><a href="#">{% trans "Edit" %}</a></li> #}
+                    <li class="manage-remove"><a {{action "deleteWallPost" target="view"}}><em class="flaticon solid trash-2"></em> {% trans "Delete" %}</a></li>
+                </ul>
+            {{/if}}
+        </header>
+
+        <div class="reaction-box">
+            {{render "wallPostReactionList" reactions}}
+        </div>
+
+    </article>
+
+
+{% endtplhandlebars %}
+
+
+
+{% tplhandlebars "task_wallpost_new" %}
+    
+    <form id="comment-box">
+	    <fieldset>
+		   <ul>
+		        <li class="control-group">
+		            <label for="wallpost-update" class="control-label">{% trans "Comment" %}</label>
+		
+		            <div class="controls">
+		                {{view Ember.TextArea valueBinding="text" placeholder="Comment" cols="50" rows="2" name="wallpost-update" id="wallpost-update"}}
+		            </div>
+		
+		            {{#if errors.text }}
+	                	<div class="errors">{{#each errors.text}}<p>{{this}}</p>{{/each}}</div>
+					{{/if}}
+		        </li>
+		    </ul>
+		</fieldset>
+	
+	    <button {{action "addTextWallPost" }} class="btn btn-iconed right" type="submit"><em class="flaticon solid thinking-comment-1"></em>{% trans "Comment" %}</button>
+    </form>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "task_wallpost" %}
+
+    <article class="wallpost">
+        <header>
+
+            <a {{action openInBigBox "memberProfile" author}} class="user initiator">
+                <span class="user-img">
+                    <img {{bindAttr src="author.getAvatar"}} width="100%" alt="Avatar" />
+                </span>
+                {# <em class="user-type not-implemented">{% trans "Project Initiator" %}</em> #}
+                <strong class="user-name">{{author.full_name}}</strong>
+                <em class="timestamp">{{ localize created formatting="X" }}</em>
+            </a>
+
+            {{#if isAuthor}}
+                <ul class="manage">
+                    {# <li class="manage-edit not-implemented"><a href="#">{% trans "Edit" %}</a></li> #}
+                    <li class="manage-remove"><a {{action "deleteWallPost" target="view"}}><em class="flaticon solid trash-2"></em> {% trans "Delete" %}</a></li>
+                </ul>
+            {{/if}}
+        </header>
+
+        <div class="content">
+            {{{text}}}
+	    </div>
+
+        <!-- reaction-box -->
+        <div class="reaction-box">
+            {{render "wallPostReactionList" reactions}}
+        </div>
+        <!-- end: reaction-box -->
+
+    </article>
+
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "task_wallpost_list" %}
+	
+	
+	    {{#if controllers.currentUser.isAuthenticated }}
+	    	<div id="comment-box">
+	        {{ render "taskWallPostNew" }}
+			</div>
+	    {{else}}
+	        <div class="login-form">
+	            <a {{action openInBox "login"}} class="nav-login">{% trans "Login" %}</a> {% trans "or become a" %} <a href="/accounts/signup">{% trans "member" %}</a> {% trans "to leave a comment." %}
+	        </div>
+	    {{/if}}
+
+    {{#each item in items itemController="wallPost"}}
+        {{#if item.isLoaded}}
+            {{view "App.TaskWallPostView"}}
+        {{/if}}
+    {{/each}}
+
+    <article class="wallpost">
+        {{#if canLoadMore}}
+            <a {{action "showMore"}} class="show-more button-link"><em class="flaticon solid plus-2"></em> {% trans "Show more" %}</a>
+        {{/if}}
+    </article>
+
+{% endtplhandlebars %}

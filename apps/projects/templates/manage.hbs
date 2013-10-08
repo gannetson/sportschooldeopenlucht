@@ -1,0 +1,1728 @@
+{% load templatetag_handlebars %}
+{% load i18n %}
+{% load static %}
+
+{% language "en" %}
+{# Force all these pages to english #}
+
+{% tplhandlebars "my_project_list" %}
+
+    <div class="container" id="project-dashboard">
+    
+    	{{partial "my_project_top"}}
+    	
+        <div class="wrapper">
+            {{#if isLoading}}
+                <span class="loading-big"></span>
+            {{else}}
+            	<h1 class="pink">{% trans "My Projects" %}</h1>
+                {{#if canPitchNew}}
+                    {{#linkTo "myPitchNew" tagName="button" class="btn btn-primary btn-iconed"}}
+                        <em class="flaticon solid lightbulb-3"></em>
+                        {% trans "Pitch your smart idea." %}
+                    {{/linkTo}}
+                {{/if}}
+            {{/if}}
+            
+            <div class="content">
+	            <ul class="donation-projects">
+	            	{{#each project in controller}}
+	                <li class="donation-project">
+				            {{#if project.isPhasePitch}}
+	                            <img {{bindAttr src="project.pitch.image.square" alt="project.pitch.title"}} class="project-image" />
+	                        {{else}}
+	                            <img {{bindAttr src="project.plan.image.square" alt="project.pitch.title"}} class="project-image" />
+	                        {{/if}}
+				            <h2>
+				                {{ project.title }}
+				                <em class="project-status">
+			                        {{#if project.isPublic}}
+			                            <a {{action "showProject" project.id href=true}}>
+			                                <em class="flaticon solid eye-1"></em>
+			                                {% trans "View public page" %}
+			                            </a>
+			                        {{/if}}
+				                </em>
+				            </h2>
+				
+				        <p class="project-actions">
+				        	{% trans "Phase" %}: <strong>{{ project.phase }}</strong> | 
+			                {{#if project.isPhasePitch}}
+			                	{% trans "Status:" %} <strong>{{project.plan.status}}</strong></p>
+                                {{#if project.pitch.isBeingReviewed}}
+								{% trans "Your pitch is in review now." %}
+								  <br/>
+								  {% trans "We'll get back to you soon!" %} 
+								{{else}}
+	                              {{#linkTo "myProjectPitch.basics" project tagName="a" class="btn btn-iconed right"}}
+	                                <em class="flaticon solid pencil-3"></em>
+	                                {% trans "Continue pitch" %}
+	                              {{/linkTo}}
+								{{/if}}
+	                        {{/if}}
+	
+	                        {{#if project.isPhasePlan}}
+	                            {% trans "Status:" %} <strong>{{project.plan.status}}</strong></p>
+	                            {{#linkTo "myProjectPlan" project tagName="a" class="btn btn-iconed right"}}
+	                                <em class="flaticon solid pencil-3"></em>
+	                                {% trans "Continue plan" %}
+	                            {{/linkTo}}
+	                        {{/if}}
+	
+	                        {{#if project.isPhaseCampaign}}
+	                            {% trans "Status:" %} <strong>{{project.campaign.status}}</strong></p>
+	                            {{#linkTo "myProjectCampaign" project tagName="a" class="btn btn-iconed right"}}
+	                                <em class="flaticon solid pencil-3"></em>
+	                                {% trans "Campaigning" %}
+	                            {{/linkTo}}
+	                        {{/if}}
+				        </p>
+				    </li>
+					{{/each}}
+	            </ul>
+			</div>
+        </div>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_pitch_new" %}
+
+
+    <div class="container" id="project-dashboard">
+    	
+    	{{partial "my_project_top"}}
+    
+        <div class="wrapper">
+            <div class="content">
+                <h1 class="pink"> {% trans "Send in your Project Pitch" %}</h1>
+
+                <strong>
+{% blocktrans %}
+Do you have a smart idea to make a contribution to your community? An idea to tackle a waste problem in your neighborhood? An idea for clean and green transport? An idea to use tech innovations to improve local healthcare?<br/><br/>
+Well, you came to the right place. We LOVE smart ideas!
+{% endblocktrans %}
+                </strong>
+
+
+                <h3>{% trans "WHEN YOUR SMART IDEA..." %}</h3>
+                <ul class="list">
+                    <li>{% trans "Might seem small, but will have a big social impact" %}</li>
+                    <li>{% trans "Is concrete and thus has a clear start and end" %}</li>
+                    <li>{% trans "Needs on off investment to make it self-sufficient and sustainable on the long term" %}</li>
+                    <li>{% trans "Takes place in one of these developing countries" %}</li>
+                    <li>{% trans "Is managed and owned locally" %}</li>
+                    <li>{% trans "Needs people, special know-how and skills" %}</li>
+                    <li>{% trans "Needs some cash to get started (up to €5000)" %}</li>
+                </ul>
+                {% trans "...your idea fits right in with 1%Club!" %}
+                <hr />
+                <p>
+{% blocktrans %}
+1%Club offers you tools to engage your crowd to turn your smart idea in to reality.<br />
+Are you ready to invest time and effort in succeeding? Double check our <a href="/#!/pages/faq-projects">FAQ</a> and pitch your smart idea here!
+{% endblocktrans %}
+                </p>
+                {{#if controllers.currentUser.isAuthenticated}}
+                    {{#if errors.detail}}
+                        <p class="alert alert-error">
+                            {% trans "Problem creating pitch." %}
+                        </p>
+                        {% trans "It looks like you already have started a project in progress. You can manage your project here:" %}
+                        {{#linkTo "myProjectList" tagName="button" class="btn btn-primary btn-iconed"}}
+                            <em class="flaticon solid pencil-3"></em>
+                            {% trans "Manage projects." %}
+                        {{/linkTo}}
+
+                    {{else}}
+                        <form>
+                            <div class="pitch-start">
+                                {{#if errors.title }}
+                                    <div class="errors">{{#each errors.title }}<p>{{this}}</p>{{/each}}</div>
+                                {{/if}}
+                                {{view Em.TextField valueBinding="title" name="title" placeholder="Title for your smart idea" classBinding="errors.title.length:error"}}
+                            </div>
+                            <br />
+                            <div class="pitch-start">
+                                <button {{bindAttr class=":btn :btn-iconed :btn-primary :right isDirty::disabled"}} {{action updateRecordOnServer}}>
+                                    <em class="flaticon solid pencil-3"></em>{% trans "write your pitch" %}
+                                </button>
+
+                            </div>
+
+                        </form>
+                    {{/if}}
+                {{else}}
+                    <form>
+                        <a href="/accounts/login">{% trans "Login" %}</a> {% trans "or become a" %} {{#linkTo "signup"}}{% trans "member" %}{{/linkTo}} {% trans "to pitch your plan." %}
+                    </form>
+                {{/if}}
+            </div>
+            <sidebar>
+                {% comment %}
+                <h3>{% trans "What is a smart pitch?" %}</h3>
+                <iframe width="323" height="242" src="//www.youtube.com/embed/ZNosNWgDMyU" frameborder="0" allowfullscreen></iframe>
+                {% endcomment %}
+            </sidebar>
+        </div>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project" %}
+	
+	<div class="container" id="project-dashboard">
+    	{{partial "my_project_top"}}
+		{{ outlet }}
+	</div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "_my_project_top" %}
+
+    <div id="profile-actions" class="section">
+        <div class="wrapper">
+            <div class="profile-actions-meta">
+                <a {{action "showProject" id href=true}} class="button-link">
+                    <img {{bindAttr src="controllers.currentUser.getAvatar" info="owner.first_name"}} />
+                    <span class="profile-actions-meta-title">
+                        {% trans "My 1%" %}
+                        
+                        {{#if title}}
+                        <span class="profile-title">
+                            {{ title }}
+                        </span>
+						{{/if}}
+						
+						{{#unless isPhasePitch}}
+						<small>
+                            <em class="flaticon solid eye-1"></em>
+							View public Project Page
+                        </small>
+						{{/unless}}
+                    </span>
+                </a>
+            </div>
+            {{#if id}}
+
+                <ul class="tabs steps">
+                    <li {{bindAttr class=":tab-item :first isPhasePitch:is-active:is-inactive"}}>
+                        <span>
+                            <span class="tab-icon"><em class="flaticon solid lightbulb-3"></em></span>
+                            <strong class="tab-title">
+                                {% trans "Pitch" %}
+                                <em class="tab-subtitle">{{ pitch.status }}</em>
+                            </strong>
+                        </span>
+                    </li>
+                    <li  {{bindAttr class=":tab-item :second isPhasePlan:is-active:is-inactive"}}>
+                        <span>
+                            <span class="tab-icon"><em class="flaticon solid notebook-1"></em></span>
+                            <strong class="tab-title">
+                                {% trans "Plan" %}
+                                <em class="tab-subtitle">{{ plan.status }}</em>
+                            </strong>
+                        </span>
+                    </li>
+                    <li {{bindAttr class=":tab-item :third isPhaseCampaign:is-active:is-inactive"}}>
+                        <span>
+                            <span class="tab-icon"><em class="flaticon">&euro;</em></span>
+                            <strong class="tab-title">
+                                {% trans "Campaign" %}
+                                <em class="tab-subtitle">{{ campaign.status }}</em>
+                            </strong>
+                        </span>
+                    </li>
+                    <li {{bindAttr class=":tab-item :fourth isPhaseAct:is-active:is-inactive"}}>
+                        <span>
+                            <span class="tab-icon"><em class="flaticon solid wrench-1"></em></span>
+                            <strong class="tab-title">{% trans "Execute" %}
+                                <em class="tab-subtitle">{{ act.status }}</em>
+                            </strong>
+                        </span>
+                    </li>
+                    <li {{bindAttr class=":tab-item :fifth isPhaseResults:is-active:is-inactive"}}>
+                        <span>
+                            <span class="tab-icon"><em class="flaticon solid flag-3"></em></span>
+                            <strong class="tab-title">{% trans "Results" %}
+                                <em class="tab-subtitle">{{ results.status }}</em>
+                            </strong>
+                        </span>
+                    </li>
+                </ul>
+            {{/if}}
+		</div>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan" %}
+
+    
+        <div class="wrapper">
+            <div class="menu-sidebar">
+                <div class="menu">
+                    <div class="title">
+                        <h4>
+                            <em class="flaticon solid notebook-1"></em>
+                            {% trans "Project Story" %}
+                        </h4>
+                    </div>
+                    {{#linkTo "myProjectPlan.basics"}}
+                        <em {{bindAttr class="validBasics:is-finished:is-unfinished"}}></em>
+                        {% trans "Project Basics" %}
+                    {{/linkTo}}
+                    {{#linkTo "myProjectPlan.description"}}
+                        <em {{bindAttr class="validDescription:is-finished:is-unfinished"}}></em>
+                        {% trans "Project Description" %}
+                    {{/linkTo}}
+                    {{#linkTo "myProjectPlan.location"}}
+                        <em {{bindAttr class="validLocation:is-finished:is-unfinished"}}></em>
+                        {% trans "Location" %}
+                    {{/linkTo}}
+                    {{#linkTo "myProjectPlan.media"}}
+                        <em {{bindAttr class="validMedia:is-finished:is-unfinished"}}></em>
+                        {% trans "Media" %}
+                    {{/linkTo}}
+                </div>
+                <div class="menu">
+                    <div class="title">
+                        <h4>
+                            <em class="flaticon solid briefcase-1"></em>
+                            {% trans "Organisation" %}
+                        </h4>
+                    </div>
+                    {{#linkTo "myProjectPlan.organisation"}}
+                        <em {{bindAttr class="organization.validProfile:is-finished:is-unfinished"}}></em>
+                        {% trans "Organisation Profile" %}
+                    {{/linkTo}}
+                    {{#if organization}}
+                        {{#linkTo "myProjectPlan.legal"}}
+                            <em {{bindAttr class="organization.validLegalStatus:is-finished:is-unfinished"}}></em>
+                            {% trans "Legal Status" %}
+                        {{/linkTo}}
+                        {{#linkTo "myProjectPlan.ambassadors"}}
+                            <em {{bindAttr class="validAmbassadors:is-finished:is-unfinished"}}></em>
+                            {% trans "Ambassadors" %}
+                        {{/linkTo}}
+                    {{/if}}
+                </div>
+
+                {{#if needsFunding}}
+                    <div class="menu">
+                        <div class="title">
+                            <h4>
+                                <em class="flaticon">&euro;</em>
+                                {% trans "Crowdfunding" %}
+                            </h4>
+                        </div>
+                        {{#linkTo "myProjectPlan.campaign"}}
+                            <em {{bindAttr class="validCampaign:is-finished:is-unfinished"}}></em>
+                            {% trans "Start Campaign" %}
+                        {{/linkTo}}
+                        {{#linkTo "myProjectPlan.budget"}}
+                            <em {{bindAttr class="validBudget:is-finished:is-unfinished"}}></em>
+                            {% trans "Budget" %}
+                        {{/linkTo}}
+                        {{#if organization}}
+                            {{#linkTo "myProjectPlan.bank"}}
+                                <em {{bindAttr class="organization.validBank:is-finished:is-unfinished"}}></em>
+                                {% trans "Bank details" %}
+                            {{/linkTo}}
+                        {{/if}}
+                    </div>
+                {{/if}}
+
+                <div class="menu">
+                    {{#linkTo "myProjectPlan.submit" class="submit"}}
+                        <em  class="flaticon solid right-square-4"></em>
+                        {% trans "Submit Plan" %}
+                    {{/linkTo}}
+                </div>
+
+            </div>
+
+            <form>
+                {{ outlet }}
+            </form>
+
+            <div class="form">
+	            <div class="toolbox">
+	                <div class="title">
+	                    <h3>
+	                        <em class="flaticon solid wrench-1"></em>
+	                        {% trans "Crowdsourcing" %}
+	                    </h3>
+	                </div>
+	                <div class="body">
+	                    <div class="tip tip-iconed">
+	                        <em class="flaticon solid lightbulb-1"></em>
+	                        {% trans "Do you need someone to help writing your business plan?" %}
+	                    </div>
+	                    {{#linkTo "projectTaskNew" project.getProject tagName="button" class="btn btn-iconed"}}
+	                        <em class="flaticon solid wrench-1"></em>
+	                        {% trans "Create a new task" %}
+	                    {{/linkTo}}
+	                </div>
+	            </div>
+	
+	            <div class="toolbox">
+	                <div class="title">
+	                    <h3>
+	                        <em class="flaticon solid megaphone-1"></em>
+	                        {% trans "Project Updates" %}
+	                    </h3>
+	
+	                </div>
+	                <div class="body">
+	                    <div class="tip tip-iconed">
+	                        <span class="flaticon solid lightbulb-1"></span>
+	                        {% trans "Why not? Ask the crowd for feedback on your idea!" %}
+	                    </div>
+	                    {{#linkTo "project" project.getProject tagName="button" class="btn btn-iconed"}}
+	                        <span class="flaticon solid megaphone-1"></span>
+	                        {% trans "Post an Update" %}
+	                    {{/linkTo}}
+	                </div>
+	            </div>
+	
+	        </div>
+
+        </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_index" %}
+
+    <fieldset>
+        <legend><strong>{% trans "Woohoo, your pitch was accepted!" %}</strong></legend>
+        <div class="form-desc">
+            <p>
+                {% trans "To complete your project plan, please fill in the empty spaces. Are there still some gaps? Don’t worry! We have a community full of people that are willing to help you.  The only thing you need to do is create a 1%Skills task ask for the right expertise." %}
+            </p>
+        </div>
+    </fieldset>
+
+    {{#if project.coach}}
+        <br/>
+        <br/>
+        <fieldset>
+            <legend><strong>{% trans "Project Coach" %}</strong></legend>
+            <div class="form-desc">
+                <p>
+                    {% trans "Meet" %} <strong>{{project.coach.first_name}}</strong>, {% trans "who's ready to guide you through writing your ProjectPlan." %}
+                    <br />
+                    <a {{action openInBigBox "userModal" project.coach }} class="member">
+                        <img {{bindAttr src="project.coach.getAvatar" info="project.coach.first_name"}} width="120" height="120" />
+                        <strong class="member-name">{{project.coach.full_name}}</strong>
+                    </a>
+                </p>
+            </div>
+        </fieldset>
+    {{/if}}
+
+    {{#linkTo myProjectPlan.basics class="btn btn-iconed right button"}}<em class="icon icon-star"></em>{% trans "Next" %}{{/linkTo}}
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_basics" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Project basics" %}</div>
+    </div>
+
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "Be short, creative, simple and memorable." %}">
+                <label class="control-label">{% trans "Title" %}</label>
+                <div class="controls">
+                    {{view Em.TextField valueBinding="title" placeholder="Title" classBinding="errors.title.length:error"}}
+                </div>
+
+                {{#if errors.title }}
+                    <div class="errors">{{#each errors.title }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "Pitch your smart idea in one sentence." %}">
+                <label class="control-label">{% trans "Pitch" %}</label>
+                <div class="controls">
+                    {{view Em.TextArea valueBinding="pitch" placeholder="Description" classBinding="errors.pitch.length:error"}}
+                </div>
+
+                {{#if errors.pitch }}
+                    <div class="errors">{{#each errors.pitch }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "Select one of the themes." %}">
+                <label class="control-label">{% trans "Theme" %}</label>
+                <div class="controls">
+                    {{view App.ThemeSelectView valueBinding="theme" classBinding="errors.theme.length:error"}}
+                </div>
+
+                {{#if errors.theme }}
+                    <div class="errors">{{#each errors.theme }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            {% comment %}
+            <li class="control-group has-popover" data-content="{% trans "Pick a short, clear name." %}">
+                <label class="control-label">{% trans "Short name" %}</label>
+                <div class="controls">
+                    {{view Em.TextField valueBinding="slug" placeholder="Short name" classBinding="errors.slug.length:error"}}
+                    <div class="extra-info">
+                        {% trans "Example: " %}
+                        <strong>http://onepercentclub.com/#/projects/{{ slug }}</strong>
+                    </div>
+                </div>
+
+                {{#if errors.slug }}
+                    <div class="errors">{{#each errors.slug }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+            {% endcomment %}
+
+            <li class="control-group">
+                <label class="control-label">
+                    {% trans "Tags" %} ({{tags.length}})<br />
+                    <small>{% trans "Between 2 and 5 tags" %}</small>
+                </label>
+                <div class="controls">
+                    {{view App.TagWidget tagsBinding="tags" classBinding="errors.tags.length:error"}}
+                </div>
+
+                {{#if errors.tags }}
+                    <div class="errors">{{#each errors.tags }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "What do you need to realise your smart idea?" %}">
+                <label class="control-label">
+                    {% trans "What do you need?" %}
+                </label>
+
+                <div class="controls">
+                    {{#view Em.RadioButtonGroup name="need" selectedValueBinding="need" class="radio-group"}}
+                        <div class="radio3">{{view view.RadioButton value="skills"}}<span>{% trans "Skills and expertise" %}</span></div>
+                        <div class="radio3">{{view view.RadioButton value="finance"}}<span>{% trans "Crowdfunding campaign" %}</span></div>
+                        <div class="radio3">{{view view.RadioButton value="both"}}<span>{% trans "Both" %}</span></div>
+                    {{/view}}
+                </div>
+            </li>
+
+        </ul>
+    </fieldset>
+
+
+    <button {{bindAttr class=":btn :btn-iconed :right isDirty::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_description" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Project description" %}</div>
+    </div>
+
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "Blow us away with the details!" %}">
+                <label class="control-label">{% trans "Why, what and how" %}</label>
+                <div class="controls wide">
+                    {{view Em.TextArea valueBinding="description"classBinding="errors.description.length:error" rows=12}}
+                </div>
+
+                {{#if errors.description }}
+                    <div class="errors">{{#each errors.description }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "What will be the Impact? How will your Smart Idea change the lives of people?" %}">
+                <label class="control-label">{% trans "Effects" %}</label>
+                <div class="controls wide">
+                    {{view Em.TextArea valueBinding="effects" classBinding="errors.effects.length:error" rows=6}}
+                </div>
+
+                {{#if errors.effects }}
+                    <div class="errors">{{#each errors.effects }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "How will this project be self-sufficient and sustainable in the long term?" %}">
+                <label class="control-label">{% trans "Future" %}</label>
+                <div class="controls wide">
+                    {{view Em.TextArea valueBinding="future" classBinding="errors.future.length:error" rows=6}}
+                </div>
+
+                {{#if errors.future }}
+                    <div class="errors">{{#each errors.future }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "Describe your target group." %}">
+                <label class="control-label">{% trans "For who" %}</label>
+                <div class="controls">
+                    {{view Em.TextArea valueBinding="forWho" classBinding="errors.forWho.length:error"}}
+                </div>
+
+                {{#if errors.forWho }}
+                    <div class="errors">{{#each errors.forWho }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "How many people do you expect to reach? Enter a number (e.g. 50)" %}">
+                <label class="control-label">{% trans "People reached" %}</label>
+                <div class="controls">
+                    {{view Em.TextField valueBinding="reach" classBinding="errors.reach.length:error"}}
+                </div>
+
+                {{#if errors.reach }}
+                    <div class="errors">{{#each errors.reach }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+        </ul>
+    </fieldset>
+
+    <button {{bindAttr class=":btn :btn-iconed :right isDirty::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_location" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Project location" %}</div>
+        <div class="form-desc">{% trans "So where is it all happenin'?" %}</div>
+    </div>
+
+
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "Country." %}">
+                <label class="control-label">{% trans "Country" %}</label>
+                <div class="controls">
+                    {{view App.ProjectCountrySelectView valueBinding="country" classBinding="errors.country.length:error"}}
+                </div>
+                {{#if errors.country }}
+                    <div class="errors">{{#each errors.country }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+            <li class="control-group has-popover" data-content="{% trans "Select the location on the map. You can use the search to find your location." %}">
+                <label class="control-label">{% trans "Location" %}</label>
+                <div class="controls wide">
+                    {{view App.MapPicker longitudeBinding="longitude" latitudeBinding="latitude" classBinding="errors.location.length:error"}}
+                </div>
+            </li>
+
+        </ul>
+
+    </fieldset>
+
+    <button {{bindAttr class=":btn :btn-iconed :right isDirty::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_media" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Project media" %}</div>
+        <div class="form-desc">{% trans "Upload a photo" %}</div>
+    </div>
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "This photo will represent your idea on 1%Club. So make sure it's personal, unique and recognisable for your smart idea and that it looks nice too!" %}">
+                <label class="control-label">
+                    {% trans "Project Picture" %}
+                </label>
+
+                <div class="controls project-pic-uploader">
+                    <a class="btn btn-iconed btn-uploader">
+                        {{view App.UploadFile fileBinding="image" name="image" accept="image/*" id="image"}}
+                        <i class="icon icon-upload"></i>
+                        {% trans "Upload picture" %}
+                    </a>
+                    <br />
+                    <div {{bindAttr class=":preview image::empty"}}>
+                        {{#if image}}
+                            <img {{bindAttr src="image.large"}} />
+                        {{else}}
+                            <img src="{% get_static_prefix %}images/empty.png" />
+                        {{/if}}
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </fieldset>
+    <button {{bindAttr class=":btn :btn-iconed isDirty::disabled :right"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_organisation" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Organisation" %}</div>
+    </div>
+
+    {{#if organization}}
+        <fieldset>
+            <ul>
+                <li class="control-group has-popover" data-content="{% trans "Name of your organisation" %}">
+                    <label class="control-label">{% trans "Name" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.name" classBinding="organization.errors.name.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.name }}
+                        <div class="errors">{{#each organization.errors.name }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Describe your organisation" %}">
+                    <label class="control-label">{% trans "Description" %}</label>
+                    <div class="controls">
+                        {{view Em.TextArea valueBinding="organization.description" classBinding="organization.errors.description.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.description }}
+                        <div class="errors">{{#each organization.errors.description }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset>
+            <legend>
+                <strong>{% trans "Address" %}</strong>
+            </legend>
+            <ul>
+                {{#each address in organization.addresses}}
+
+                    <li class="control-group has-popover" data-content="{% trans "What type of address is this? You can add multiple addresses" %}">
+                        <label class="control-label">{% trans "Type" %}</label>
+                        <div class="controls">
+                            {{view App.AddressTypeSelectView valueBinding="address.type" classBinding="address.errors.type.length:error"}}
+                        </div>
+
+                        {{#if address.errors.type }}
+                            <div class="errors">{{#each address.errors.type }}<p>{{this}}</p>{{/each}}</div>
+                        {{/if}}
+                    </li>
+
+                    <li class="control-group has-popover" data-content="{% trans "Street, house number, the place in your city" %}">
+                        <label class="control-label">{% trans "Address line 1" %}</label>
+                        <div class="controls">
+                            {{view Em.TextField valueBinding="address.line1" classBinding="address.errors.line1.length:error"}}
+                        </div>
+
+                        {{#if address.errors.line1 }}
+                            <div class="errors">{{#each address.errors.line1 }}<p>{{this}}</p>{{/each}}</div>
+                        {{/if}}
+
+                    </li>
+
+                    <li class="control-group has-popover" data-content="{% trans "More about your address" %}">
+                        <label class="control-label">{% trans "Address line 2" %}</label>
+                        <div class="controls">
+                            {{view Em.TextField valueBinding="address.line2" classBinding="address.errors.line2.length:error"}}
+                        </div>
+
+                        {{#if address.errors.line2 }}
+                            <div class="errors">{{#each address.errors.line2 }}<p>{{this}}</p>{{/each}}</div>
+                        {{/if}}
+                    </li>
+
+
+                    <li class="control-group has-popover" data-content="{% trans "City or village.." %}">
+                        <label class="control-label">{% trans "City" %}</label>
+                        <div class="controls">
+                            {{view Em.TextField valueBinding="address.city" classBinding="address.errors.city.length:error"}}
+                        </div>
+
+                        {{#if address.errors.city }}
+                            <div class="errors">{{#each address.errors.city }}<p>{{this}}</p>{{/each}}</div>
+                        {{/if}}
+                    </li>
+
+                    <li class="control-group has-popover" data-content="{% trans "Postal code" %}">
+                        <label class="control-label">{% trans "Postal code" %}</label>
+                        <div class="controls">
+                            {{view Em.TextField valueBinding="address.postal_code" classBinding="address.errors.postal_code.length:error"}}
+                        </div>
+
+                        {{#if address.errors.postal_code }}
+                            <div class="errors">{{#each address.errors.postal_code }}<p>{{this}}</p>{{/each}}</div>
+                        {{/if}}
+                    </li>
+
+                    <li class="control-group has-popover" data-content="{% trans "Country or territory" %}">
+                        <label class="control-label">{% trans "Country" %}</label>
+                        <div class="controls">
+                            {{view App.CountrySelectView valueBinding="address.country" classBinding="address.errors.country.length:error"}}
+                        </div>
+
+                        {{#if address.errors.country }}
+                            <div class="errors">{{#each address.errors.country }}<p>{{this}}</p>{{/each}}</div>
+                        {{/if}}
+                    </li>
+
+                    <li class="control-group has-popover" data-content="{% trans "Do you want to remove this address?" %}">
+                        <label class="control-label">
+                            <a {{action removeAddress address}}><span class="icon-remove-sign"></span> {% trans "Remove this address" %}</a>
+                        </label>
+                        <hr />
+                    </li>
+                {{/each}}
+                <li class="control-group has-popover" data-content="{% trans "Does your organisation has more addresses?" %}">
+                    <label class="control-label">
+                        <a {{action addAddress}}><span class="icon-plus-sign"></span> {% trans "Add address" %}</a>
+                    </label>
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset>
+            <legend>
+                <strong>{% trans "Online" %}</strong>
+            </legend>
+            <ul>
+
+                <li class="control-group has-popover" data-content="{% trans "Does your organization have a website?" %}">
+                    <label class="control-label">{% trans "Website" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.website" classBinding="organization.errors.website.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.website }}
+                        <div class="errors">{{#each organization.errors.website }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Email address" %}">
+                    <label class="control-label">{% trans "Email" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.email" classBinding="organization.errors.email.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.email }}
+                        <div class="errors">{{#each organization.errors.email }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Does your organization have a twitter account?" %}">
+                    <label class="control-label">{% trans "Twitter" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.twitter" placeholder="@twitteraccount" classBinding="organization.errors.twitter.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.twitter }}
+                        <div class="errors">{{#each organization.errors.twitter }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Does your organization have a facebook group?" %}">
+                    <label class="control-label">{% trans "Facebook" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.facebook" placeholder="https://www.facebook.com/<groupname>" classBinding="organization.errors.facebook.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.facebook }}
+                        <div class="errors">{{#each organization.errors.facebook }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Can we reach you on Skype?" %}">
+                    <label class="control-label">{% trans "Skype" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.skype" placeholder="skype name" classBinding="organization.errors.skype.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.skype }}
+                        <div class="errors">{{#each organization.errors.skype }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+            </ul>
+        </fieldset>
+        <button {{bindAttr class=":btn :btn-iconed :right shouldSave::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+    {{else}}
+        <fieldset>
+            <ul>
+                <li class="control-group has-popover" data-content="{% trans "Choose your organisation from the list or create a new one." %}">
+                    <label class="control-label">{% trans "Organisation" %}</label>
+                    <div class="controls">
+                        <ul>
+                            {{#each organizations}}
+                                <li>
+                                    <h4>{{this.name}}</h4>
+                                    {{this.description}}
+                                    <br/>
+                                    <a {{action selectOrganization this}}>{% trans "Select" %}</a>
+                                </li>
+                            {{/each}}
+                            <li>
+                                <h4>{% trans "create new" %}</h4>
+                                {% trans "Create a new organization to run this project." %}
+                                <br/>
+                                <a {{action createNewOrganization organization}}>{% trans "Create" %}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </fieldset>
+    {{/if}}
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_legal" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Legal status" %}</div>
+        <div class="form-desc">
+            {% trans "Please upload an excerpt of your official registration to show that your NGO is registered." %}
+        </div>
+
+    </div>
+
+
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "What is the legal status of your organization? Include the registration number." %}">
+                <label class="control-label">{% trans "Legal status" %}</label>
+                <div class="controls">
+                    {{view Em.TextField valueBinding="organization.legalStatus" placeholder="Legal status" classBinding="organization.errors.legalStatus.length:error"}}
+                </div>
+
+                {{#if organization.errors.legalStatus }}
+                    <div class="errors">{{#each organization.errors.legalStatus }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "please upload a copy of your passport. Make sure it's a valid one and we can read it clearly!" %}">
+                <label class="control-label">
+                    {% trans "Documents" %} ({{organization.documents.length}})<br />
+                    <small>
+                        {% trans ".jpg, .png or .pdf" %}
+                    </small>
+                </label>
+
+                <div class="controls project-pic-uploader">
+                    <a class="btn btn-iconed btn-uploader">
+                        {{view App.UploadMultipleFiles valueBinding="image" name="documents" multiple=true}}
+                        <em class="icon icon-upload"></em>
+                        {% trans "Upload scan(s)" %}
+                    </a>
+                    <br />
+                    {{#each doc in organization.documents}}
+                        <a {{action removeFile doc}}><span class="icon-remove-sign"></span></a>
+                        <a {{bindAttr href=doc.file.url}}>
+                            {{doc.file.name}} <small>{{doc.file.size}}</small><br/>
+                        </a>
+                    {{/each}}
+                </div>
+            </li>
+        </ul>
+    </fieldset>
+
+    <button {{bindAttr class=":btn :btn-iconed :right shouldSave::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_ambassadors" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Ambassadors" %}</div>
+        <div class="form-desc">
+            {% blocktrans %}
+An ambassador is somebody who can tell something about your smart idea or about you as a person or your organisation. Ambassadors will make your story more credible and will add that little something extra. You probably have lots of people in your network who can act as ambassador, but be sure it is not your mom and the person meets our criteria (see <a href="/#!/pages/faq-projects">FAQ</a>).<br /><br />
+Do you want to start a crowdfunding campaign? Make sure all ambassadors create a 1%Profile and post a short comment on your project page to promote your smart idea.<br /><br />
+You've to have at least 3 ambassadors. (more? great!)<br /><br />
+            {% endblocktrans %}
+        </div>
+    </div>
+
+    <fieldset>
+        <ul>
+            {{#each ambassador in ambassadors}}
+
+                <li class="control-group has-popover" data-content="{% trans "Email address of the amabassador" %}">
+                    <label class="control-label">{% trans "Name" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="ambassador.name" classBinding="ambassador.errors.name.length:error"}}
+                    </div>
+
+                    {{#if ambassador.errors.name }}
+                        <div class="errors">{{#each ambassador.errors.name }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Email address of the amabassador" %}">
+                    <label class="control-label">{% trans "Email" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="ambassador.email" classBinding="ambassador.errors.email.length:error"}}
+                    </div>
+
+                    {{#if ambassador.errors.email }}
+                        <div class="errors">{{#each ambassador.errors.email }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Can you tell something more about this ambassador." %}">
+                    <label class="control-label">{% trans "Description" %}</label>
+                    <div class="controls">
+                        {{view Em.TextArea valueBinding="ambassador.description" classBinding="ambassador.errors.description.length:error"}}
+                    </div>
+
+                    {{#if ambassador.errors.description }}
+                        <div class="errors">{{#each ambassador.errors.description }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Do you want to remove this ambassador?" %}">
+                    <label class="control-label">
+                        <a {{action removeAmbassador ambassador}}><span class="icon-remove-sign"></span> {% trans "Remove this ambassador" %}</a>
+                    </label>
+                    <hr />
+                </li>
+            {{/each}}
+            <li class="control-group has-popover" data-content="{% trans "You should at least add three ambassadors." %}">
+                <label class="control-label">
+                    <a {{action addAmbassador}}><span class="icon-plus-sign"></span> {% trans "Add another ambassador" %}</a>
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+
+    <button {{bindAttr class=":btn :btn-iconed :right shouldSave::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_bank" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Bank details" %}</div>
+    </div>
+
+    {{#if organization.isLoaded}}
+        <fieldset>
+            <ul>
+                <li class="control-group has-popover" data-content="{% trans "Name of the bank that holds your acount." %}">
+                    <label class="control-label">{% trans "Account bank name" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.account_bank_name" classBinding="organization.errors.account_bank_name.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_bank_name }}
+                        <div class="errors">{{#each organization.errors.account_bank_name }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Address of the bank." %}">
+                    <label class="control-label">{% trans "Bank address" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.account_bank_address" classBinding="organization.errors.account_bank_address.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_bank_address }}
+                        <div class="errors">{{#each organization.errors.account_bank_address }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Country of the bank." %}">
+                    <label class="control-label">{% trans "Bank country" %}</label>
+                    <div class="controls">
+                        {{view App.CountrySelectView valueBinding="organization.account_bank_country" classBinding="organization.errors.account_bank_country.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_bank_country }}
+                        <div class="errors">{{#each organization.errors.account_bank_country }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Bank account number." %}">
+                    <label class="control-label">{% trans "Account number" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.account_number" classBinding="organization.errors.account_number.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_number }}
+                        <div class="errors">{{#each organization.errors.account_number }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Name of the bank account holder." %}">
+                    <label class="control-label">{% trans "Account name" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.account_name" classBinding="organization.errors.account_name.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_name }}
+                        <div class="errors">{{#each organization.errors.account_name }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Account holder city" %}">
+                    <label class="control-label">{% trans "Account city" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.account_city" classBinding="organization.errors.account_city.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_city }}
+                        <div class="errors">{{#each organization.errors.account_city }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "You ony have to enter this if your country supports IBAN." %}">
+                    <label class="control-label">{% trans "Account IBAN" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.account_iban" classBinding="organization.errors.account_iban.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_iban }}
+                        <div class="errors">{{#each organization.errors.account_iban }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "BIC/SWIFT code for your bank" %}">
+                    <label class="control-label">{% trans "Bank BIC/SWIFT code" %}</label>
+                    <div class="controls">
+                        {{view Em.TextField valueBinding="organization.account_bic" classBinding="organization.errors.account_bic.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_bic }}
+                        <div class="errors">{{#each organization.errors.account_bic }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+
+                <li class="control-group has-popover" data-content="{% trans "Do we need more information to make an eventual bank transfer?" %}">
+                    <label class="control-label">{% trans "Extra info" %}</label>
+                    <div class="controls">
+                        {{view Em.TextArea valueBinding="organization.account_other" classBinding="organization.errors.account_other.length:error"}}
+                    </div>
+
+                    {{#if organization.errors.account_other }}
+                        <div class="errors">{{#each organization.errors.account_other }}<p>{{this}}</p>{{/each}}</div>
+                    {{/if}}
+                </li>
+            </ul>
+        </fieldset>
+        <button {{bindAttr class=":btn :btn-iconed :right shouldSave::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+    {{else}}
+        {{#if organization}}
+            {% trans "Loading data" %}
+        {{else}}
+            {% trans "You should create an organisation profile first." %}
+        {{/if}}
+    {{/if}}
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_campaign" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Crowndfunding Campaign" %}</div>
+        <div class="form-desc">
+            {% blocktrans %}
+Sometimes people are lucky and support for their project directly comes in from all corners of the world. However, for the other 99% it starts with their own network and their networks’ network. This basically means you have to tell your network about your project on 1%Club. Once, twice, maybe even three times. Per e-mail, on Facebook, on Twitter, face-to-face, by phone, by poster or in a video message. Whatever you need to do to get them on board! Our advice would be to have some people on board to help you do this.<br/><br/>
+Do realize that you have to put in work to make it work. And remember, hard work tends to pays off. You have 6 months for this campaign so use it wisely. If you don’t succeed the money will go back to the people who gave it and they will choose another project.<br/><br/>
+Need more tips and tricks? Read our <a href="/#!/pages/faq-projects">FAQ</a>.<br/><br/>
+            {% endblocktrans %}
+
+        </div>
+    </div>
+
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "Describe in one sentence where the money is needed for." %}">
+                <label class="control-label">{% trans "Money needed for" %}</label>
+                <div class="controls">
+                    {{view Em.TextField valueBinding="moneyNeeded" classBinding="errors.moneyNeeded.length:error"}}
+                </div>
+
+                {{#if errors.moneyNeeded }}
+                    <div class="errors">{{#each errors.moneyNeeded }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "What is your crowdfunding strategy? What steps are you going to take? " %}">
+                <label class="control-label">{% trans "Campaign strategy" %}</label>
+                <div class="controls">
+                    {{view Em.TextArea valueBinding="campaign" rows="6" classBinding="errors.campaign.length:error"}}
+                </div>
+
+                {{#if errors.campaign }}
+                    <div class="errors">{{#each errors.campaign }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+        </ul>
+    </fieldset>
+
+    <button {{bindAttr class=":btn :btn-iconed :right isDirty::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_budget" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Budget needed" %}</div>
+        <div class="form-desc">
+{% blocktrans %}
+Time to let us know how the money that you will be raising will be spent! Be sure to give us a
+detailed insight in your budget as it will only make your credibility go up. Just one little suggestion
+before you start; be realistic in your crowdfunding goal. Better a smaller amount and make it then a
+large amount and have nothing in the end. Also, there are certain things not allowed to ask money for.
+Check them in our <a href="/#!/pages/faq-projects">FAQ</a>.
+<br/>
+Please add 5% administration fee to your budget. The total amount, including the fee, cannot exceed 5.000 Euro.
+{% endblocktrans %}
+        </div>
+    </div>
+
+    <fieldset>
+        <ul>
+            {{#each line in budgetLines}}
+                <li class="control-group">
+                    <div class="controls wide budget-line">
+                        <a {{action removeBudgetLine line href=true}}>
+                            <span class="icon icon-remove-sign"></span>
+                        </a>
+                        {{view Em.TextField valueBinding="line.description" placeholder="Description" class="description"}}
+                        {{view Em.TextField valueBinding="line.amount" placeholder="Amount euro" class="amount"}}
+                    </div>
+                </li>
+            {{/each}}
+            <li class="control-group">
+                <div class="controls wide budget-line">
+                    <a {{action addBudgetLine line href=true}}>
+                        <span class="icon icon-plus-sign"></span>
+                    </a>
+                    <div class="description">
+                        <a {{action addBudgetLine line href=true}}>
+                            {% trans "Add an item to your needed budget." %}
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="control-group">
+                <div class="controls wide budget-line">
+                    <a>
+                        <span class="icon icon-money"></span>
+                    </a>
+                    <div class="description">{% trans "Total budget needed" %}</div>
+                    <div class="amount">{{totalBudget}}</div>
+                </div>
+                {{#if totalBudget}}
+                    {{#unless validBudget}}
+                        <div class="errors"><p>{% trans "Total budget shouldn't be over 5000 euro." %}</p></div>
+                    {{/unless}}
+                {{else}}
+                    <div class="errors"><p>{% trans "Start adding items to your budget." %}</p></div>
+                {{/if}}
+
+            </li>
+        </ul>
+    </fieldset>
+
+    <button {{bindAttr class=":btn :btn-iconed :right shouldSave::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_submit" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Submit Plan" %}</div>
+    </div>
+
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "Agree to the terms to submit the plan" %}">
+                <label class="control-label">
+                    &nbsp;
+                </label>
+                <div class="controls">
+                    <h4>{% trans "Check!" %}</h4>
+                    {% blocktrans %}
+                        Make sure that you filled out the entire form and that all items to the left have a <span class="icon-ok"></span> check sign.
+                        If one of the items still shows a <span class="icon-circle"></span> circle then that still needs some work.
+                    {% endblocktrans %}
+                </div>
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "Agree to the terms to submit the plan" %}">
+                <div class="controls wide">
+                    {{view Em.Checkbox checkedBinding="agreed" classBinding=":left errors.agreed.length:error"}}
+                    <span>&nbsp;</span>
+                    {% trans "I agree to the " %}
+                    <a {{action showPage 'terms-and-conditions'}}>{% trans "general terms and conditions" %}</a>
+                </div>
+            </li>
+        </ul>
+
+    </fieldset>
+    {{#if agreed}}
+        <button {{bindAttr class=":btn :btn-iconed :right :btn-primary"}} {{action submitPlan}}><em class="icon icon-star"></em>{% trans "Submit plan" %}</button>
+    {{else}}
+        <button {{bindAttr class=":btn :btn-iconed :right :disabled"}}><em class="icon icon-star"></em>{% trans "Submit plan" %}</button>
+    {{/if}}
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_review" %}
+
+    <div class="wrapper">
+        <article class="content">
+            <h2>{% trans "Your plan is in review now. We'll get back to you soon!" %}</h2>
+        </article>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_rejected" %}
+
+
+    <div class="wrapper">
+        <article class="content">
+            <h2>
+                {% trans "We're sorry, your plan has been rejected." %}
+                {% trans "Please contact us if you need support to define your smart idea." %}
+            </h2>
+        </article>
+    </div>
+
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_plan_approved" %}
+
+
+    <div class="wrapper ">
+        <article class="content">
+            <h2>
+                {% trans "Yeah! Your plan has been approved." %}<br/>
+                {% trans "You can start your " %} {{#linkTo myProjectCampaign}}{% trans "Campaign" %}{{/linkTo}}
+            </h2>
+        </article>
+    </div>
+
+
+{% endtplhandlebars %}
+
+
+
+{% tplhandlebars "my_pitch_index" %}
+
+    <fieldset>
+        <legend>
+        	<strong>{% trans "Get ready to write your pitch!" %}</strong>
+			<p>{% blocktrans %}Time to pitch your smart idea because we just can’t wait to hear about it! Make sure your story is positive, convincing and compelling. Fill in the Projects Basics, Location and a Picture. Need more tips and tricks to blow us away with your pitch? Check out our <a href="/#!/pages/faq-projects">FAQ</a>.{% endblocktrans %}</p>
+        </legend>
+    </fieldset>
+
+    {{#linkTo myProjectPitch.basics class="btn btn-iconed right button"}}<em class="flaticon solid right-1"></em>{% trans "Next" %}{{/linkTo}}
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_pitch" %}
+
+
+    <div class="wrapper">
+        <div class="menu-sidebar">
+            <div class="menu">
+                <div class="title">
+                    <h4>
+                        <em class="flaticon solid lightbulb-3"></em>
+                        {% trans "Project Pitch" %}
+                    </h4>
+                </div>
+                {{#linkTo "myProjectPitch.basics"}}
+                    <em {{bindAttr class="validBasics:is-finished:is-unfinished"}}></em>
+                    {% trans "Project Basics" %}
+                {{/linkTo}}
+                {{#linkTo "myProjectPitch.location"}}
+                    <em {{bindAttr class="validLocation:is-finished:is-unfinished"}}></em>
+                    {% trans "Location" %}
+                {{/linkTo}}
+                {{#linkTo "myProjectPitch.media"}}
+                    <em {{bindAttr class="validMedia:is-finished:is-unfinished"}}></em>
+                    {% trans "Media" %}
+                {{/linkTo}}
+                {{#linkTo "myProjectPitch.submit" class="submit"}}
+                    <span class="icon"><em class="flaticon solid right-1"></em></span>
+                    {% trans "Submit Pitch" %}
+                {{/linkTo}}
+            </div>
+        </div>
+        <form>
+            {{ outlet }}
+        </form>
+    </div>
+
+
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_pitch_basics" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Pitch basics" %}</div>
+    </div>
+
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "Be short, creative, simple and memorable." %}">
+                <label class="control-label">{% trans "Title" %}</label>
+                <div class="controls">
+                    {{view Em.TextField valueBinding="title" placeholder="Title" classBinding="errors.title.length:error"}}
+                </div>
+
+                {{#if errors.title }}
+                    <div class="errors">{{#each errors.title }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "By reading your pitch many donors already make the decision to donate or not. The explanation must be to the point, because people don't have time to read everything." %}">
+                <label class="control-label">{% trans "Pitch" %}</label>
+                <div class="controls">
+                    {{view Em.TextArea valueBinding="pitch" placeholder="Description" classBinding="errors.pitch.length:error"}}
+                </div>
+
+                {{#if errors.pitch }}
+                    <div class="errors">{{#each errors.pitch }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "A short description should at least tell something about a person, place, mitvation and activity. The simplest story would be: [Person] in [place] needs help to [activity] because [motivation]." %}">
+                <label class="control-label wide">{% trans "Short explanation: Why, what and how" %}</label>
+                <div class="controls wide">
+                    {{view Em.TextArea valueBinding="description"classBinding="errors.description.length:error" rows=12}}
+                </div>
+
+                {{#if errors.description }}
+                    <div class="errors">{{#each errors.description }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "Select one of the themes." %}">
+                <label class="control-label">{% trans "Theme" %}</label>
+                <div class="controls">
+                    {{view App.ThemeSelectView valueBinding="theme" classBinding="errors.theme.length:error"}}
+                </div>
+
+                {{#if errors.theme }}
+                    <div class="errors">{{#each errors.theme }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+
+            <li class="control-group">
+                <label class="control-label">
+                    {% trans "Tags" %} ({{tags.length}})<br />
+                    <small>{% trans "Between 2 and 5 tags" %}</small>
+                </label>
+
+                <div class="controls">
+                    {{view App.TagWidget tagsBinding="tags" classBinding="errors.tags.length:error"}}
+                </div>
+
+                {{#if errors.tags }}
+                    <div class="errors">{{#each errors.tags }}<p>{{this}}</p>{{/each}}</div>
+                {{/if}}
+            </li>
+            <li class="control-group has-popover" data-content="{% trans "What do you need to realise your smart idea?" %}">
+                <label class="control-label">
+                    {% trans "What do you need?" %}
+                </label>
+
+                <div class="controls">
+                    {{#view Em.RadioButtonGroup name="need" selectedValueBinding="need" class="radio-group"}}
+                        <div class="radio3">{{view view.RadioButton value="skills"}}<span>{% trans "Skills and expertise" %}</span></div>
+                        <div class="radio3">{{view view.RadioButton value="finance"}}<span>{% trans "Crowdfunding campaign" %}</span></div>
+                        <div class="radio3">{{view view.RadioButton value="both"}}<span>{% trans "Both" %}</span></div>
+                    {{/view}}
+                </div>
+            </li>
+        </ul>
+    </fieldset>
+
+    <button {{bindAttr class=":btn :btn-iconed :right isDirty::disabled"}} {{action updateRecordOnServer}}><em class="icon icon-star"></em>{% trans "Save & Next" %}</button>
+
+{% endtplhandlebars %}
+
+
+
+{% tplhandlebars "my_pitch_submit" %}
+
+    <div class="form-meta">
+        <div class="form-label">{% trans "Submit Pitch" %}</div>
+        <div class="form-desc">{% trans "Send your pitch to us, we'll get back to you soon." %}</div>
+
+    </div>
+
+    <fieldset>
+        <ul>
+            <li class="control-group has-popover" data-content="{% trans "Agree to the terms to submit the pitch" %}">
+                <label class="control-label">
+                    &nbsp;
+                </label>
+                <div class="controls">
+                    {{#if validBasics}}
+                        <h4>
+                            <span class="icon-ok"></span> Basics are ok!<br/>
+                        </h4>
+                    {{else}}
+                        <h4>
+                            {{#linkTo "myProjectPitch.basics"}}Basics{{/linkTo}} still need work!
+                        </h4>
+                        {{#unless title}}
+                            <span class="icon-ban-circle"></span> <b>Title</b> is missing<br/>
+                        {{/unless}}
+                        {{#unless pitch}}
+                            <span class="icon-ban-circle"></span> <b>Pitch</b> is missing<br/>
+                        {{/unless}}
+                        {{#unless theme}}
+                            <span class="icon-ban-circle"></span> <b>Theme</b> is missing<br/>
+                        {{/unless}}
+                        {{#unless description}}
+                            <span class="icon-ban-circle"></span> <b>Why, what and how</b> is missing<br/>
+                        {{/unless}}
+                        {{#unless tags}}
+                            <span class="icon-ban-circle"></span> <b>Tags</b> are missing. Add at least five tags.<br/>
+                        {{/unless}}
+                    {{/if}}
+                    {{#if validLocation}}
+                        <h4>
+                            <span class="icon-ok"></span> Location is ok!<br/>
+                        </h4>
+                    {{else}}
+                        <h4>
+                            {{#linkTo "myProjectPitch.basics"}}Basics{{/linkTo}} still need work!<br/>
+                        </h4>
+                        {{#unless latitude}}
+                            <span class="icon-ban-circle"></span> <b>Map location</b> is missing<br/>
+                        {{/unless}}
+                        {{#unless country}}
+                            <span class="icon-ban-circle"></span> <b>Country</b> are missing<br/>
+                        {{/unless}}
+                    {{/if}}
+                    {{#if validMedia}}
+                        <h4>
+                            <span class="icon-ok"></span> Media is ok!<br/>
+                        </h4>
+                    {{else}}
+                        <h4>
+                            {{#linkTo "myProjectPitch.media"}}Media{{/linkTo}} still need work!
+                        </h4>
+                        <span class="icon-ban-circle"></span> <b>Image</b> is missing<br/>
+                    {{/if}}
+                </div>
+            </li>
+
+            <li class="control-group has-popover" data-content="{% trans "Agree to the terms to submit the pitch" %}">
+                <div class="controls wide">
+                    {{view Em.Checkbox checkedBinding="agreed" classBinding=":left errors.agreed.length:error"}}
+                    <span>&nbsp;</span>
+                    {% trans "I agree to the " %}
+                    <a {{action showPage 'terms-and-conditions'}}>{% trans "general terms and conditions" %}</a>
+                </div>
+            </li>
+        </ul>
+
+    </fieldset>
+    {{#if agreed}}
+        <button {{bindAttr class=":btn :btn-iconed :right :btn-primary"}} {{action submitPitch}}><em class="icon icon-star"></em>{% trans "Submit pitch" %}</button>
+    {{else}}
+        <button {{bindAttr class=":btn :btn-iconed :right :btn-primary :disabled"}}><em class="icon icon-star"></em>{% trans "Submit pitch" %}</button>
+    {{/if}}
+
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_pitch_review" %}
+
+    <div class="wrapper">
+        <article class="content">
+            <h2>
+                {% trans "Your pitch is in review now." %}<br/>
+                {% trans "We'll get back to you soon!" %}
+            </h2>
+        </article>
+    </div>
+
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_pitch_rejected" %}
+
+    <div class="wrapper">
+        <article class="content">
+            <h2>
+                {% trans "We're sorry, your pitch has been rejected." %}<br />
+                {% trans "Please contact us if you need support to define your smart idea." %}
+            </h2>
+        </article>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_pitch_approved" %}
+
+    <div class="wrapper">
+        <article class="content">
+            <h2>
+                {% trans "Yeah! Your pitch has been approved." %}<br/>
+                {% trans "You can write your {{#linkTo myProjectPlan}}Project Plan{{/linkTo}}!" %}
+            </h2>
+
+        </article>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "map_picker" %}
+
+    <div class="map-picker"></div>
+    <div class="map-look-up">
+        {{view Em.TextField valueBinding="view.lookup" placeholder="Search your location."}}
+        <button {{action lookUpLocation target="view"}}>search</button>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "my_project_campaign" %}
+
+    <div class="wrapper">
+        <div class="menu-sidebar">
+            <div class="menu">
+                <div class="title">
+                    <h4>
+                        <em class="icon-lock"></em>
+                        {% trans "Project Story" %}
+                    </h4>
+                </div>
+                <div class="body">
+                    Your plan is approved and currently locked. If you need to make any changes: please sent a message to
+                    {{#if coach}}your 1%COACH, <strong>{{coach.full_name}}</strong>, at{{/if}} projects@1procentclub.nl.
+                </div>
+            </div>
+
+            <div class="menu">
+                <div class="title">
+                    <h4>
+                        <em class="icon-money"></em>
+                        {% trans "Funding status" %}
+                    </h4>
+                </div>
+                <div class="body">
+                    <div class="project-status">
+                        <div class="donate-status">
+                            <p class="donate-amount">
+                                &euro;{{campaign.money_donated}}
+                                {% trans "of" %}
+                                &euro;{{campaign.money_asked}}
+                                {% trans "raised" %}
+                            </p>
+                            <span class="donate-slider"><strong style="width: 40%;" class="donate-progress is-in-progress"><em class="donate-percentage">40%</em></strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <form>
+            <fieldset>
+                <legend><strong>{% trans "How is your campaign going?" %}</strong></legend>
+                    <div class="body">
+                        {% blocktrans %}
+                        Is money pouring in? No? Our tips & tricks might help you.
+                        Check our <a href="/#!/pages/faq-projects">FAQ</a>! And remember Einsteins words: "You have to learn the rules
+                        of the game. And then you have to play better than anyone else".
+                        You can do it!
+                        {% endblocktrans %}
+
+                        <div class="project-days-left">
+                            {{#if campaign.deadline}}
+                                <h3>
+                                    <em class="icon-time"></em>
+                                    <strong>{{campaign.daysToGo}}</strong>
+                                    {% trans "days to go" %}
+                                </h3>
+                            {{/if}}
+                        </div>
+                    </div>
+            </fieldset>
+        </form>
+
+        <div class="form">
+            <div class="toolbox">
+                <div class="title">
+                    <h3>
+                        <em class="flaticon solid wrench-1"></em>
+                        {% trans "Crowdsourcing" %}
+                    </h3>
+                </div>
+                <div class="body">
+                    <div class="tip tip-iconed">
+                        <em class="flaticon solid lightbulb-1"></em>
+                        {% trans "Do you need someone to help writing your business plan?" %}
+                    </div>
+                    {{#linkTo "projectTaskNew" getProject tagName="button" class="btn btn-iconed"}}
+                        <em class="flaticon solid wrench-1"></em>
+                        {% trans "Create a new task" %}
+                    {{/linkTo}}
+                </div>
+            </div>
+
+            <div class="toolbox">
+                <div class="title">
+                    <h3>
+                        <em class="flaticon solid megaphone-1"></em>
+                        {% trans "Project Updates" %}
+                    </h3>
+
+                </div>
+                <div class="body">
+                    <div class="tip tip-iconed">
+                        <span class="flaticon solid lightbulb-1"></span>
+                        {% trans "Why not? Ask the crowd for feedback on your idea!" %}
+                    </div>
+                    {{#linkTo "project" getProject tagName="button" class="btn btn-iconed"}}
+                        <span class="flaticon solid megaphone-1"></span>
+                        {% trans "Post an Update" %}
+                    {{/linkTo}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endtplhandlebars %}
+
+{% endlanguage %}

@@ -1,0 +1,181 @@
+{% load templatetag_handlebars %}
+{% load i18n %}
+{% load static %}
+
+{% tplhandlebars "page" %}
+    <div class="container">
+        {{#if view.showTitle}}
+        	<section class="wrapper">
+        		<div id="page" {{bindAttr class=id}}>
+					<div id="page-content">
+		            	<header id="page-header" class="title">
+		                	<h1>{{title}}</h1>
+						</header>
+					
+						{{{body}}} 
+					</div>
+					
+					<sidebar class="pages-nav">
+						<h3>{% trans "About 1%Club" %}</h3>
+						<ul>
+							<li><a {{action showPage 'story'}} href="/#!/pages/story">{% trans "Our Story" %}</a></li>
+							<li><a {{action showPage 'faq'}} href="/#!/pages/faq">{% trans "Frequently Asked Questions" %}</a></li>
+							<li><a {{action showPage 'meet-team'}} href="/#!/pages/meet-team">{% trans "Meet the team" %}</a></li>
+							<li><a {{action showPage 'partners'}} href="/#!/pages/partners">{% trans "Partners" %}</a></li>
+							<li><a {{action showPage 'press'}} href="/#!/pages/press">{% trans "Press" %}</a></li>
+							<li><a {{action showPage 'work'}} href="/#!/pages/work">{% trans "Work at 1%Club" %}</a></li>
+							<li>{{#linkTo contactMessage href=true}}{% trans "Contact" %}{{/linkTo}}</a></li>
+						</ul>
+					</sidebar>
+					
+        		</div>
+        	</section>
+        {{else}}
+        	{{{body}}}
+        {{/if}}
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "error/not_found" %}
+
+    <section class="wrapper">
+        <article id="page" class="error">
+			<div id="page-content">
+	            <header id="page-header" class="title">
+	                <h1>{% trans "Something went wrong" %}</h1>
+	            </header>
+	            
+            	<p>{% trans "The page you are looking for couldn't be found." %}</p>
+			</div>
+        </article>
+    </section>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "contact_message" %}
+
+    <div class="container">
+        <section class="wrapper">
+            <article class="contact" id="page">
+            	<div id="page-content">
+            	
+	            	<header id="page-header" class="title">
+		                <h1>{% trans "Contact" %}</h1>
+		                <p>
+		                    {% blocktrans %}
+		                    Send us a message or get in touch using the details below. Talk to you soon!
+		                    {% endblocktrans %}
+		                </p>
+	            	</header>
+            	
+		            <form id="contact-form">
+		                {{#if isSent}}
+		                	<div class="form-meta">
+								<div class="form-label">{% trans "Thanks for your message!. We'll get back to you soon" %}.</div>
+							</div>
+		                {{else}}
+		                    <fieldset>
+		                        <ul>
+		                            <li class="control-group">
+		                                <label class="control-label">{% trans "Name" %}</label>
+		                                <div class="controls">
+		                                    {{view Em.TextField valueBinding="name" classBinding="errors.name.length:error"}}
+		                                </div>
+		
+		                                {{#if errors.name }}
+		                                    <div class="errors">{{#each errors.name }}<p>{{this}}</p>{{/each}}</div>
+		                                {{/if}}
+		
+		                            </li>
+		
+		                            <li class="control-group">
+		                                <label class="control-label">{% trans "Email" %}</label>
+		                                <div class="controls">
+		                                    {{view Em.TextField valueBinding="email" classBinding="errors.email.length:error"}}
+		                                </div>
+		
+		                                {{#if errors.email }}
+		                                    <div class="errors">{{#each errors.email }}<p>{{this}}</p>{{/each}}</div>
+		                                {{/if}}
+		
+		                            </li>
+		
+		                            <li class="control-group">
+		                                <label class="control-label">{% trans "Message" %}</label>
+		                                <div class="controls">
+		                                    {{view Em.TextArea valueBinding="message" rows="6" classBinding="errors.message.length:error"}}
+		                                </div>
+		
+		                                {{#if errors.message }}
+		                                    <div class="errors">{{#each errors.message }}<p>{{this}}</p>{{/each}}</div>
+		                                {{/if}}
+		
+		                            </li>
+		
+		                        </ul>
+		                    </fieldset>
+		                    <button {{bindAttr class=":btn :btn-iconed :right :btn-primary"}} {{action updateRecordOnServer}}><em class="flaticon icon solid envelope-1"></em>{% trans "Send Message" %}</button>
+		                {{/if}}
+		            </form>
+            	</div>
+            	
+	            <sidebar class="sidebar tip">
+	            	<h3>{% trans "Other ways to contact" %}</h3>
+{% blocktrans %}
+<p>
+    Email:<a href="mailto:info@onepercentclub.com?subject=Contact">info@onepercentclub.com</a><br />
+    Twitter:<a href="https://twitter.com/1percentclub">@1percentclub</a><br />
+    Facebook: <a href="http://www.facebook.com/onepercentclub">/onepercentclub</a>
+</p>
+<p>
+    1%Club Foundation<br />
+    's Gravenhekje 1a<br />
+    1011 TG Amsterdam<br />
+    The Netherlands<br />
+</p>
+<p>
+    Bank: Rabobank (Haarlem)<br />
+    Account number: NL45 RABO 01322070 44(donations)<br />
+    BIC: RABONL2U<br />
+    <br />
+    Chamber of Commerce number 34.26.78.95<br />
+    Phone(+31) 20 715 8980<br />
+</p>
+{% endblocktrans %}
+	            </sidebar>
+	            
+	        </article>
+        </section>
+    </div>
+
+{% endtplhandlebars %}
+
+
+{% tplhandlebars "partner" %}
+    <div class="container" id="partner-detail">
+        <section class="wrapper">
+
+            <figure class="media">
+                <img {{bindAttr src="image.large"}} width="100%" alt="Photo" />
+            </figure>
+
+            <article>
+                <h1>{{name}}</h1>
+                <p>{{linebreaks description formatting='br'}}</p>
+            </article>
+        </section>
+
+        <section class="wrapper">
+            <ul id="results">
+                {{#each project in projects}}
+                    {{render "projectPreview" project}}
+                {{else}}
+                    <li>{% trans "No projects found." %}</li>
+                {{/each}}
+            </ul>
+        </section>
+    </div>
+{% endtplhandlebars %}

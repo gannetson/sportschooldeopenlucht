@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="606122215">
+    <data-source source="LOCAL" name="Django default" uuid="1cddaf9a-68e8-4bb0-aaa1-abe5ef7b45fc">
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql:sportschool</jdbc-url>
+      <user-name>gannetson</user-name>
+      <user-password>dfc6df99dfdedfc7df99df9bdfc4</user-password>
+      <libraries>
+        <library>
+          <url>file://$USER_HOME$/.PyCharm20/config/jdbc-drivers/postgresql-driver-license.txt</url>
+        </library>
+        <library>
+          <url>file://$USER_HOME$/.PyCharm20/config/jdbc-drivers/postgresql-9.1-901.jdbc3.jar</url>
+        </library>
+      </libraries>
+    </data-source>
+  </component>
+</project>
+
